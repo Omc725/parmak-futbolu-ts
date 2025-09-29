@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://Omc725.github.io/parmak-futbolu3",
+  "homepage": "https://Omc725.github.io/parmak-futbolu-ts",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
