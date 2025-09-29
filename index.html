@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Parmak Futbolu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Roboto:wght@400;700&family=Press+Start+2P&family=VT323&family=Lobster&display=swap" rel="stylesheet">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#1a252f" />
+    <link rel="apple-touch-icon" href="./icon-192x192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+      html, body, #root {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+      }
+      :root {
+        --bg-main: #111827;
+        --bg-primary: #1f2937;
+        --bg-secondary: #374151;
+        --bg-tertiary: #4b5563;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --border-color: #4b5563;
+        --accent-emerald: #10b981;
+        --accent-sky: #0ea5e9;
+        --accent-rose: #f43f5e;
+        --accent-amber: #f59e0b;
+        --font-main: 'Nunito', sans-serif;
+      }
+
+      html.theme-light {
+        --bg-main: #f3f4f6;
+        --bg-primary: #ffffff;
+        --bg-secondary: #e5e7eb;
+        --bg-tertiary: #d1d5db;
+        --text-primary: #111827;
+        --text-secondary: #4b5563;
+        --border-color: #d1d5db;
+      }
+      
+      html.theme-synthwave {
+        --bg-main: #1a103c;
+        --bg-primary: #2c1d5c;
+        --bg-secondary: #452991;
+        --bg-tertiary: #6d3fd9;
+        --text-primary: #f0e6ff;
+        --text-secondary: #c7b3fa;
+        --border-color: #452991;
+        --accent-emerald: #00f5d4;
+        --accent-sky: #00f5d4;
+        --accent-rose: #ff00a0;
+        --accent-amber: #ffca00;
+      }
+
+      html.theme-forest {
+        --bg-main: #2d3a2e;
+        --bg-primary: #3d4f3e;
+        --bg-secondary: #567057;
+        --bg-tertiary: #7aa57b;
+        --text-primary: #f0f5f0;
+        --text-secondary: #c7d4c7;
+        --border-color: #567057;
+        --accent-emerald: #6a994e;
+      }
+      
+      html.theme-sepia {
+        --bg-main: #fbf0e4;
+        --bg-primary: #efe1d1;
+        --bg-secondary: #a6856c;
+        --bg-tertiary: #8c6d53;
+        --text-primary: #594535;
+        --text-secondary: #705844;
+        --border-color: #a6856c;
+      }
+
+      body {
+        font-family: var(--font-main);
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+        background-color: var(--bg-main);
+        color: var(--text-primary);
+      }
+      
+      body.font-pixel {
+        font-size: 35%;
+        line-height: 1.2;
+      }
+      
+      body.font-pixel .scoreboard-score {
+        font-size: 2.5rem;
+      }
+      body.font-pixel .scoreboard-timer {
+        font-size: 1.25rem;
+      }
+
+      body.font-pixel .main-menu-buttons button {
+        font-size: 1.8em;
+      }
+
+      body.font-pixel .selection-grid button:not(.btn-back) {
+        font-size: 1.7em;
+      }
+      
+      body.font-pixel .team-selection-grid button {
+        font-size: 1.8em;
+        line-height: 1.1;
+      }
+
+      body.font-pixel .btn-back,
+      body.font-pixel .btn-match-control,
+      body.font-pixel .post-match-commentary {
+        font-size: 2.2em;
+      }
+
+      .theme-pixel button, .btn-pixel {
+        border-radius: 12px !important;
+        border: none;
+        box-shadow: 
+          inset 2px 2px 0px rgba(255, 255, 255, 0.4),
+          inset -3px -3px 0px rgba(0, 0, 0, 0.3)
+          !important;
+        transition: box-shadow 0.1s ease-out;
+        transform: none !important;
+      }
+      .theme-pixel button:active, .btn-pixel:active {
+        box-shadow: 
+          inset -2px -2px 0px rgba(255, 255, 255, 0.4),
+          inset 3px 3px 0px rgba(0, 0, 0, 0.3)
+          !important;
+        transform: none !important;
+      }
+      
+      .theme-pixel .box-pixel {
+        border-radius: 12px !important;
+        border: 4px solid var(--text-primary) !important;
+        box-shadow: 8px 8px 0px rgba(0,0,0,0.2) !important;
+        background-color: var(--bg-primary) !important;
+      }
+      
+      /* --- Retro Theme --- */
+      html.theme-retro main::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: repeating-linear-gradient(0deg, rgba(0,0,0,0.3) 0, rgba(0,0,0,0.3) 1px, transparent 1px, transparent 3px);
+          pointer-events: none;
+          z-index: 100;
+      }
+      html.theme-retro button, html.theme-retro [class*="box-"] {
+          border-radius: 0 !important;
+          border: 2px solid var(--accent-emerald) !important;
+          box-shadow: 0 0 10px var(--accent-emerald), inset 0 0 8px var(--accent-emerald) !important;
+          transform: none !important;
+          background-color: rgba(16, 185, 129, 0.1) !important;
+          backdrop-filter: none !important;
+      }
+      html.theme-retro h1, html.theme-retro h2, html.theme-retro h3 {
+          text-shadow: 0 0 8px var(--accent-emerald) !important;
+      }
+
+      /* --- Sketch Theme --- */
+      html.theme-sketch body {
+        background-image: url('https://www.transparenttextures.com/patterns/paper.png');
+      }
+      html.theme-sketch button, html.theme-sketch [class*="box-"] {
+          border-radius: 12px !important;
+          border: 3px solid var(--text-primary) !important;
+          filter: url(#sketchy-filter);
+          transform: none !important;
+          box-shadow: none !important;
+          transition: transform 0.2s ease;
+      }
+      html.theme-sketch button:hover {
+          transform: rotate(-1.5deg) scale(1.05) !important;
+      }
+
+
+      @keyframes score-pop {
+        0% {
+          transform: scale(1);
+          text-shadow: none;
+        }
+        40% {
+          transform: scale(1.5);
+          color: #facc15;
+          text-shadow: 0 0 15px #facc15, 0 0 25px #facc15;
+        }
+        100% {
+          transform: scale(1);
+          text-shadow: none;
+        }
+      }
+
+      .animate-score-pop {
+        animation: score-pop 0.6s ease-in-out;
+      }
+
+      @keyframes sway {
+        0%, 100% {
+          transform: rotate(-1.5deg);
+        }
+        50% {
+          transform: rotate(1.5deg);
+        }
+      }
+      .animate-sway {
+        animation: sway 4s ease-in-out infinite;
+        transform-origin: center bottom;
+      }
+
+      .settings-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 50;
+        background-color: rgba(41, 52, 65, 0.7);
+        border: 1px solid rgba(100, 116, 139, 0.5);
+        color: white;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .settings-btn:hover {
+        background-color: rgba(51, 65, 85, 0.9);
+        transform: rotate(45deg);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "vite": "https://aistudiocdn.com/vite@^7.1.7",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.0.3",
+    "path": "https://aistudiocdn.com/path@^0.12.7",
+    "vite-plugin-pwa": "https://aistudiocdn.com/vite-plugin-pwa@^1.0.3",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.21.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <svg style="display:none">
+      <filter id="sketchy-filter">
+        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="1" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" />
+      </filter>
+    </svg>
+    <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
