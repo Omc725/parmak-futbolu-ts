@@ -3,11 +3,13 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
+const repoName = 'parmak-futbolu-ts'; // GitHub depo adınızı buraya yazın
+
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
-      // GitHub Pages depo adınızla eşleştiğinden emin olun
-      base: '/parmak-futbolu-ts/', 
+      // Projenin GitHub Pages'deki alt klasör yolunu belirtir
+      base: `/${repoName}/`,
       server: {
         port: 3000,
         host: '0.0.0.0',
@@ -16,78 +18,63 @@ export default defineConfig(({ mode }) => {
         react(),
         VitePWA({
           registerType: 'autoUpdate',
-          // Assets klasöründeki her şeyin (logolar, saha resimleri vb.) PWA'ya dahil edilmesini sağlar.
-          includeAssets: ['icon-512x512.png', 'assets/**/*'],
+          // PWA'nın manifest dosyasını nereye koyacağını belirtir.
+          manifestFilename: 'manifest.json',
+          
+          // Çevrimdışı önbelleğe alınacak dosyaları belirtir.
+          includeAssets: ['assets/**/*'], // Tüm logolar, saha resimleri vb.
+          
           manifest: {
+            // Manifest içeriği
             name: 'Parmak Futbolu',
             short_name: 'Parmak Futbolu',
             description: 'Hızlı tempolu bir langırt oyunu! Çevrimdışı oynanabilir.',
-            theme_color: '#2c3e50',
-            background_color: '#2c3e50',
+            
+            // --- EN ÖNEMLİ DÜZELTME ---
+            // start_url ve scope, base ayarından etkilenir.
+            // VitePWA bu yolları otomatik olarak doğru şekilde oluşturacaktır.
+            // Bu yüzden burayı basit tutuyoruz.
+            start_url: '.', 
+            scope: '.',
+            
             display: 'standalone',
-            start_url: '.',
+            background_color: '#2c3e50',
+            theme_color: '#2c3e50',
             icons: [
               { src: 'icon-144x144.png', sizes: '144x144', type: 'image/png' },
               { src: 'icon-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
               { src: 'icon-512x512.png', sizes: '512x512', type: 'image/png' }
             ]
           },
+          
           workbox: {
-            // Proje içindeki dosyaları önbelleğe alır.
+            // Proje içindeki tüm dosyaları önbelleğe al
             globPatterns: ['**/*.{js,css,html,png,svg,jpg,jpeg,gif,woff,woff2}'],
-            maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
-
-            // HARİCİ URL'LERİ ÖNBELLEĞE ALMA BÖLÜMÜ
+            // Harici CDN'leri önbelleğe al
             runtimeCaching: [
-              // 1. aistudio CDN (React, Vite vb. kütüphaneler için)
+              // aistudio CDN
               {
                 urlPattern: /^https:\/\/aistudiocdn\.com\/.*/i,
                 handler: 'CacheFirst',
-                options: {
-                  cacheName: 'aistudio-cdn-cache',
-                  expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 365 }, // 1 Yıl
-                  cacheableResponse: { statuses: [0, 200] }
-                }
+                options: { cacheName: 'aistudio-cdn-cache', expiration: { maxEntries: 20, maxAgeSeconds: 365 * 24 * 60 * 60 } }
               },
-              // 2. Google Fonts (Yazı tipleri CSS dosyası için)
+              // Google Fonts (CSS ve font dosyaları)
               {
-                urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+                urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
                 handler: 'CacheFirst',
-                options: {
-                  cacheName: 'google-fonts-cache',
-                  expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 }, // 1 Yıl
-                  cacheableResponse: { statuses: [0, 200] }
-                }
+                options: { cacheName: 'google-fonts-cache', expiration: { maxEntries: 10, maxAgeSeconds: 365 * 24 * 60 * 60 } }
               },
-              // 3. Google Fonts (Yazı tipi dosyaları .woff2 için)
-              {
-                urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-                handler: 'CacheFirst',
-                options: {
-                  cacheName: 'google-fonts-files-cache',
-                  expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 }, // 1 Yıl
-                  cacheableResponse: { statuses: [0, 200] }
-                }
-              },
-              // 4. Tailwind CSS CDN (Stiller için)
+              // Tailwind CSS CDN
               {
                 urlPattern: /^https:\/\/cdn\.tailwindcss\.com\/.*/i,
                 handler: 'CacheFirst',
-                options: {
-                  cacheName: 'tailwind-cdn-cache',
-                  expiration: { maxEntries: 5, maxAgeSeconds: 60 * 60 * 24 * 30 }, // 30 Gün
-                  cacheableResponse: { statuses: [0, 200] }
-                }
+                options: { cacheName: 'tailwind-cdn-cache', expiration: { maxEntries: 5, maxAgeSeconds: 30 * 24 * 60 * 60 } }
               },
-              // 5. Transparent Textures (Sketch teması arkaplanı için)
+              // Transparent Textures
               {
                 urlPattern: /^https:\/\/www\.transparenttextures\.com\/.*/i,
                 handler: 'CacheFirst',
-                options: {
-                  cacheName: 'textures-cache',
-                  expiration: { maxEntries: 5, maxAgeSeconds: 60 * 60 * 24 * 365 }, // 1 Yıl
-                  cacheableResponse: { statuses: [0, 200] }
-                }
+                options: { cacheName: 'textures-cache', expiration: { maxEntries: 5, maxAgeSeconds: 365 * 24 * 60 * 60 } }
               }
             ]
           }
